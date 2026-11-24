@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A research brief on Zenon withdrawal proofs, Bitcoin vault release, and the feasibility of Praxis witness encryption.">
+  <meta name="color-scheme" content="light">
+  <title>Zenon Bitcoin Vault · Research Brief</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="header">
+    <div class="shell header-inner">
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span> Zenon Bitcoin Vault</a>
+      <nav aria-label="On this page">
+        <a href="#design">Design</a>
+        <a href="#praxis">Praxis</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#sources">Sources</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="title">
+      <div class="shell hero-grid">
+        <div>
+          <p class="eyebrow">Research brief <span>·</span> November 2026</p>
+          <h1 id="title">Zenon<br>Bitcoin Vault</h1>
+          <p class="lede">Can a verified Zenon withdrawal release Bitcoin to a predetermined recipient?</p>
+          <p class="intro">The first experiment uses a single fixed-output vault, synthetic withdrawal claims, and Bitcoin Core regtest.</p>
+          <div class="hero-links">
+            <a class="button" href="#roadmap">Explore the roadmap <span aria-hidden="true">↓</span></a>
+            <a class="quiet-link" href="#sources">Read the sources <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <figure class="flow">
+          <figcaption>Proposed release path</figcaption>
+          <ol>
+            <li><span class="flow-type">Zenon</span><strong>Withdrawal authorization</strong><span>Accepted event, amount, recipient, and proof context</span></li>
+            <li><span class="flow-type">Off-chain</span><strong>Conditional release</strong><span>A verified statement unlocks the pre-signed spend</span></li>
+            <li><span class="flow-type">Bitcoin</span><strong>Fixed-output payment</strong><span>Bitcoin enforces the signature and spending conditions</span></li>
+          </ol>
+          <p class="flow-note"><span aria-hidden="true">↳</span> A separate timelock governs the refund path.</p>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section shell" id="design" aria-labelledby="design-heading">
+      <div class="section-label"><span class="rule"></span> Vault design</div>
+      <div class="section-body">
+        <h2 id="design-heading">A proof can release a spend. The signature fixes where it goes.</h2>
+        <p class="section-lede">The prototype targets one Bitcoin output and one recipient. Its mock checks the withdrawal record and releases a previously signed transaction. Bitcoin Core checks the signature, payout, and timelock rules on regtest.</p>
+        <div class="boundary">
+          <article>
+            <h3>Withdrawal evidence</h3>
+            <p>A Momentum commitment can establish that a block is included under a supplied header. A production exit also needs proof that the withdrawal was accepted under the intended rules and belongs to the history the verifier treats as final. The experimental Zeno state-root path helps establish state inclusion under a verified header.</p>
+            <a href="https://github.com/edgepillar/zenon-spv/blob/main/docs/verification-contract.md">Zenon SPV verification contract <span aria-hidden="true">↗</span></a>
+          </article>
+          <article>
+            <h3>Setup and refund</h3>
+            <p>A completed pre-signed transaction is already a spending capability. Deleting signing keys leaves existing copies usable. A future encrypted-release setup needs a credible way to protect that capability and verify the encrypted payload. Release and refund must also remain consistent if either path is delayed.</p>
+            <a href="https://bips.dev/65/">Bitcoin timelock rules <span aria-hidden="true">↗</span></a>
+          </article>
+        </div>
+        <aside class="callout"><strong>Evidence boundary.</strong> Local unit tests passed for the synthetic claim matcher. The end-to-end Bitcoin Core run is pending. The mock uses an already signed transaction in cleartext and provides no witness-encryption or Zenon finality guarantee.</aside>
+      </div>
+    </section>
+
+    <section class="praxis-section" id="praxis" aria-labelledby="praxis-heading">
+      <div class="shell section">
+        <div class="section-label"><span class="rule"></span> Cryptography</div>
+        <div class="section-body">
+          <h2 id="praxis-heading">Where Praxis fits</h2>
+          <p class="section-lede">Praxis is a witness-encryption proposal by David Tse, Nikhil Vanjani, and Psi Vesely. For the paper’s BN254 example, a Groth16 proof accepted for the selected public input can serve as a decryption witness. A vault could use that capability to release a narrowly scoped spending authorization.</p>
+          <dl class="metrics" aria-label="Praxis estimates at the paper's 100-bit target">
+            <div><dt>Ciphertext</dt><dd>7.88 <small>GiB</small></dd></div>
+            <div><dt>Encryption</dt><dd>2<sup>34.2</sup></dd><dd class="metric-unit">base-field multiplications</dd></div>
+            <div><dt>Expected decryption</dt><dd>2<sup>33</sup></dd><dd class="metric-unit">base-field multiplications</dd></div>
+          </dl>
+          <p class="caption">Praxis paper estimates at its stated 100-bit target. Proof generation is additional. The paper counts arithmetic operations and excludes point compression, hashing, and memory traffic.</p>
+          <p>The extraction result relies on the paper’s group and random-oracle models and its Module-SIS assumption. The Groth16 example also depends on honest setup and correct encoding of the verifier. The Lean formalization covers the stated model, with the verifier encoding outside its scope.</p>
+          <p class="citations"><a href="https://arxiv.org/pdf/2611.28552v1#page=35">Praxis §6 <span aria-hidden="true">↗</span></a><a href="https://github.com/psivesely/praxis-lean#readme">Lean formalization <span aria-hidden="true">↗</span></a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section shell" id="roadmap" aria-labelledby="roadmap-heading">
+      <div class="section-label"><span class="rule"></span> Roadmap</div>
+      <div class="section-body">
+        <h2 id="roadmap-heading">What would justify the next step?</h2>
+        <ol class="roadmap">
+          <li>
+            <div><h3>Complete the regtest experiment</h3><span class="status">Integration pending</span></div>
+            <p>Confirm the exact payout and reject a changed output or repeat spend. Reject an early refund and confirm the refund after maturity. Record the result against a pinned Bitcoin Core release.</p>
+          </li>
+          <li>
+            <div><h3>Consume a real Zenon test witness</h3><span class="status">Research</span></div>
+            <p>Verify a real Zeno state entry on a selected v3 test environment. Pin the network, header, state root, and domain context. Then bind an accepted withdrawal to the Bitcoin output, amount, and recipient.</p>
+          </li>
+          <li>
+            <div><h3>Define when withdrawal evidence is final</h3><span class="status">Open</span></div>
+            <p>Specify the verifier’s rules for producer authorization, fork selection, and irreversible release. Exercise stale and conflicting views and show how refund and release are reconciled.</p>
+          </li>
+          <li>
+            <div><h3>Evaluate encrypted release</h3><span class="status">Open</span></div>
+            <p>Require reproducible encryption and decryption, a checked verifier encoding, and an end-to-end measurement of proof generation, runtime, and ciphertext availability. Compare with BABE or BitVM for the same withdrawal and trust model.</p>
+          </li>
+        </ol>
+        <p class="caption">The roadmap covers a fixed-recipient vault. A transferable BTC peg introduces recipient selection, liquidity, and issuance and redemption accounting.</p>
+      </div>
+    </section>
+
+    <section class="section shell sources" id="sources" aria-labelledby="sources-heading">
+      <div class="section-label"><span class="rule"></span> References</div>
+      <div class="section-body">
+        <h2 id="sources-heading">Primary sources</h2>
+        <ul>
+          <li><a href="https://eprint.iacr.org/2026/2971">Praxis: Practical Witness Encryption for NP <span aria-hidden="true">↗</span></a><p>Original proposal and concrete-cost estimates.</p></li>
+          <li><a href="https://forum.zenon.org/t/project-zeno/2384">Project Zeno development update <span aria-hidden="true">↗</span></a><p>Experimental state-root and settlement work, with phase boundaries.</p></li>
+          <li><a href="https://github.com/Zeno-L2/zeno-docs/blob/d74ba1fc4b01583af0daf33a2dedfc84ea2b9419/research/bridges.md">Zeno-L2 bridge research <span aria-hidden="true">↗</span></a><p>Outbox authorization and foreign-chain release requirements.</p></li>
+          <li><a href="https://docs.babylonlabs.io/papers/BABE_Research_Paper_Jan_2026.pdf">BABE: Verifying Proofs on Bitcoin Made 1000x Cheaper <span aria-hidden="true">↗</span></a><p>A specialized proof-verification design with a different setup and challenge model.</p></li>
+          <li><a href="https://bips.dev/143/">BIP 143: Transaction Signature Verification for Version 0 Witness Program <span aria-hidden="true">↗</span></a><p>Signature digest and output commitment for the regtest vault’s witness version.</p></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <span>Zenon Bitcoin Vault · Research</span>
+      <a href="https://github.com/edgepillar">edgepillar on GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+  </footer>
+</body>
+</html>
