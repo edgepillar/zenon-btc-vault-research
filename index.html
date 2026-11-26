@@ -64,7 +64,7 @@
             <a href="https://bips.dev/65/">Bitcoin timelock rules <span aria-hidden="true">↗</span></a>
           </article>
         </div>
-        <aside class="callout"><strong>Evidence boundary.</strong> Local unit tests passed for the synthetic claim matcher. The end-to-end Bitcoin Core run is pending. The mock uses an already signed transaction in cleartext and provides no witness-encryption or Zenon finality guarantee.</aside>
+        <aside class="callout"><strong>Regtest evidence.</strong> The main baseline passed on Bitcoin Core 32.1. The draft registration and CPFP changes passed 27 unit tests and both integration fixtures. These runs use synthetic funds, one isolated Bitcoin node, and a cleartext mock release. Zenon withdrawal verification and witness encryption remain research milestones. <a href="https://github.com/edgepillar/zenon-btc-vault/actions/runs/45435279766">Main baseline</a> · <a href="https://github.com/edgepillar/zenon-btc-vault/pull/3">Draft PR</a> · <a href="https://github.com/edgepillar/zenon-btc-vault/actions/runs/45735694490">Draft CI</a></aside>
       </div>
     </section>
 
@@ -92,8 +92,8 @@
         <h2 id="roadmap-heading">What would justify the next step?</h2>
         <ol class="roadmap">
           <li>
-            <div><h3>Complete the regtest experiment</h3><span class="status">Integration pending</span></div>
-            <p>Confirm the exact payout and reject a changed output or repeat spend. Reject an early refund and confirm the refund after maturity. Record the result against a pinned Bitcoin Core release.</p>
+            <div><h3>Verify the fixed-recipient Bitcoin flow</h3><span class="status">Regtest passed</span></div>
+            <p>The baseline confirms the signed payout and the timelocked refund. The draft fee experiment registers and releases the exact zero-fee parent, publishes it with a fresh fee child, and observes both replacement orders at or after refund maturity.</p>
           </li>
           <li>
             <div><h3>Consume a real Zenon test witness</h3><span class="status">Research</span></div>
