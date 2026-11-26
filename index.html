@@ -64,7 +64,7 @@
             <a href="https://bips.dev/65/">Bitcoin timelock rules <span aria-hidden="true">↗</span></a>
           </article>
         </div>
-        <aside class="callout"><strong>Regtest evidence.</strong> The main baseline passed on Bitcoin Core 32.1. The draft registration and CPFP changes passed 27 unit tests and both integration fixtures. These runs use synthetic funds, one isolated Bitcoin node, and a cleartext mock release. Zenon withdrawal verification and witness encryption remain research milestones. <a href="https://github.com/edgepillar/zenon-btc-vault/actions/runs/45435279766">Main baseline</a> · <a href="https://github.com/edgepillar/zenon-btc-vault/pull/3">Draft PR</a> · <a href="https://github.com/edgepillar/zenon-btc-vault/actions/runs/45735694490">Draft CI</a></aside>
+        <aside class="callout"><strong>Regtest evidence.</strong> The main baseline passed on Bitcoin Core 32.1. The draft registration and CPFP changes passed 27 unit tests and both integration fixtures. These runs use synthetic funds, one isolated Bitcoin node, and a cleartext mock release. Binding a verified Zenon withdrawal to a Bitcoin payout and implementing witness encryption remain research milestones. <a href="https://github.com/edgepillar/zenon-btc-vault/actions/runs/45435279766">Main baseline</a> · <a href="https://github.com/edgepillar/zenon-btc-vault/pull/3">Draft PR</a> · <a href="https://github.com/edgepillar/zenon-btc-vault/actions/runs/45735694490">Draft CI</a></aside>
       </div>
     </section>
 
@@ -96,8 +96,8 @@
             <p>The baseline confirms the signed payout and the timelocked refund. The draft fee experiment registers and releases the exact zero-fee parent, publishes it with a fresh fee child, and observes both replacement orders at or after refund maturity.</p>
           </li>
           <li>
-            <div><h3>Consume a real Zenon test witness</h3><span class="status">Research</span></div>
-            <p>Verify a real Zeno state entry on a selected v3 test environment. Pin the network, header, state root, and domain context. Then bind an accepted withdrawal to the Bitcoin output, amount, and recipient.</p>
+            <div><h3>Verify a Zeno devnet withdrawal</h3><span class="status">Proof replay passed</span></div>
+            <p>The draft fixture replays the Settlement state and outbox proofs for a 0.4 ZNN withdrawal in devnet batch 5. It refuses the early checkpoint at Momentum 111 and accepts the proof at Momentum 115 under the selected devnet checkpoint policy. <a href="https://github.com/edgepillar/zenon-btc-vault/blob/8b47e415553a3cde37b6524b21ab0833ac11479c/research/zeno-withdrawal/evidence.json">Evidence fixture</a> · <a href="https://github.com/edgepillar/zenon-btc-vault/actions/runs/45747504011">Offline replay</a></p>
           </li>
           <li>
             <div><h3>Define when withdrawal evidence is final</h3><span class="status">Open</span></div>
